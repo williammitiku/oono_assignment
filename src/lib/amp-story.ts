@@ -1,12 +1,12 @@
 import type { Collection, StoryItem } from "./types";
 import { getAssetUrl } from "./api";
 
-/** Optional 0-based index to start the story at (for deep-linking). Optional backUrl adds a final "Back" page. */
+/** Optional 0-based index to start the story at (for deep-linking). Optional closeUrl is the X button target (e.g. collection page). */
 export function generateAmpStoryHtml(
   collection: Collection,
   baseUrl: string,
   startAtStoryIndex: number = 0,
-  backUrl?: string
+  closeUrl?: string
 ): string {
   const posterSrc = getAssetUrl(collection.thumbnail || collection.cover);
   const title = collection.name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -15,15 +15,7 @@ export function generateAmpStoryHtml(
   );
   const fromIndex = Math.max(0, Math.min(startAtStoryIndex, sorted.length));
   const storiesToRender = sorted.slice(fromIndex);
-  const pages = storiesToRender.map((story, i) => renderStoryPage(story, i));
-  if (backUrl) {
-    const safeBack = escapeHtml(backUrl);
-    pages.push(`    <amp-story-page id="back" auto-advance-after="999d">
-      <amp-story-grid-layer template="vertical">
-        <a href="${safeBack}">← Back to collections</a>
-      </amp-story-grid-layer>
-    </amp-story-page>`);
-  }
+  const pages = storiesToRender.map((story, i) => renderStoryPage(story, i, closeUrl));
   return `<!DOCTYPE html>
 <html ⚡ lang="en">
 <head>
@@ -34,6 +26,7 @@ export function generateAmpStoryHtml(
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <link rel="canonical" href="${baseUrl}">
+  <style amp-custom>.amp-story-close-wrap{position:absolute;top:12px;right:12px;z-index:10;}.amp-story-close{display:flex;align-items:center;justify-content:center;width:48px;height:48px;color:#fff;text-decoration:none;font-size:32px;line-height:1;font-weight:300;background:rgba(0,0,0,.55);border-radius:50%;}.amp-story-close:hover{background:rgba(0,0,0,.75);}</style>
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
   <noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
 </head>
@@ -52,7 +45,7 @@ ${pages.join("\n")}
 </html>`;
 }
 
-function renderStoryPage(story: StoryItem, index: number): string {
+function renderStoryPage(story: StoryItem, index: number, closeUrl?: string): string {
   const pageId = `page-${index}`;
   const isVideo = story.backgroundType === "VIDEO";
   const isImage = story.backgroundType === "IMAGE" || story.backgroundType === "EMBED";
@@ -68,10 +61,24 @@ function renderStoryPage(story: StoryItem, index: number): string {
   }
 
   const autoAdvance = isVideo ? ` auto-advance-after="vid-${index}"` : ` auto-advance-after="${duration}s"`;
+  const closeLayer =
+    closeUrl != null
+      ? `
+      <amp-story-grid-layer template="fill">
+        <span class="amp-story-close-wrap"><a href="${escapeHtml(closeUrl)}" class="amp-story-close" aria-label="Close and go to home" data-tooltip-text="Close and go to home">×</a></span>
+      </amp-story-grid-layer>`
+      : "";
+  const outlink =
+    closeUrl != null
+      ? `
+      <amp-story-page-outlink layout="nodisplay">
+        <a href="${escapeHtml(closeUrl)}" title="Close and go to home">Close and go to home</a>
+      </amp-story-page-outlink>`
+      : "";
   return `    <amp-story-page id="${pageId}"${autoAdvance}>
       <amp-story-grid-layer template="fill">
         ${mediaTag}
-      </amp-story-grid-layer>
+      </amp-story-grid-layer>${closeLayer}${outlink}
     </amp-story-page>`;
 }
 

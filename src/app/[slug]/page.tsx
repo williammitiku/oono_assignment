@@ -22,7 +22,7 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
   const selectedTopicId = topicParam && topicParam.trim() !== "" ? topicParam.trim() : null;
 
   if (USE_AMP_PLAYER && showPlayer && c) {
-    redirect(`/api/amp-story/${slug}?${new URLSearchParams({ c, story: String(storyNum) }).toString()}`);
+    redirect(`/api/amp-story/${slug}?${new URLSearchParams({ c, story: String(storyNum) }).toString()}#showStoryUrlInfo=0`);
   }
 
   let collections: Awaited<ReturnType<typeof fetchCollections>>["data"] = [];

@@ -27,8 +27,8 @@ export async function GET(
     ? Math.max(0, (parseInt(storyParam, 10) || 1) - 1)
     : 0;
   const baseUrl = request.nextUrl.origin + request.nextUrl.pathname + "?c=" + encodeURIComponent(c);
-  const backUrl = request.nextUrl.origin + "/" + slug;
-  const html = generateAmpStoryHtml(collection, baseUrl, startAtStoryIndex, backUrl);
+  const closeUrl = request.nextUrl.origin + "/";
+  const html = generateAmpStoryHtml(collection, baseUrl, startAtStoryIndex, closeUrl);
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",

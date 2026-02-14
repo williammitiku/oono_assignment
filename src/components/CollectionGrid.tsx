@@ -31,7 +31,7 @@ function CollectionCard({
   params.set("story", "1");
   if (topicParam) params.set("topic", topicParam);
   const href = USE_AMP_PLAYER
-    ? `/api/amp-story/${slug}?${params.toString()}`
+    ? `/api/amp-story/${slug}?${params.toString()}#showStoryUrlInfo=0`
     : `/${slug}?${params.toString()}`;
   const thumbUrl = getAssetUrl(col.thumbnail || col.cover);
   const title = col.name.length > 50 ? col.name.slice(0, 47) + "…" : col.name;
@@ -95,7 +95,7 @@ export function CollectionGrid({
             params.set("story", "1");
             if (selectedTopicId) params.set("topic", selectedTopicId);
             const linkHref = USE_AMP_PLAYER
-              ? `/api/amp-story/${slug}?${params.toString()}`
+              ? `/api/amp-story/${slug}?${params.toString()}#showStoryUrlInfo=0`
               : `/${slug}?${params.toString()}`;
             return (
               <Link
