@@ -2,6 +2,30 @@
 
 The in-app story player can use **AMP Story** (when `NEXT_PUBLIC_USE_AMP_PLAYER=true`). The document is generated in `src/lib/amp-story.ts` and served at `/api/amp-story/[slug]?c=...&story=...`.
 
+## 0. Confirm the story is opening through AMP
+
+Use these checks to confirm that when you open a collection, the **AMP player** is used (not the oono staging iframe).
+
+1. **Env**  
+   AMP is used only when `NEXT_PUBLIC_USE_AMP_PLAYER=true`.  
+   - Local: set in `.env.local` and restart the dev server.  
+   - Vercel: set in Project → Settings → Environment Variables for Production/Preview.
+
+2. **Iframe URL (quickest)**  
+   Open a collection so the story overlay appears, then:
+   - **DevTools → Elements**: select the `<iframe>` inside the overlay. Check its `src`:
+     - **AMP in use:** `src` starts with `/api/amp-story/` (e.g. `/api/amp-story/nov-25?c=...&story=1`).
+     - **Staging in use:** `src` starts with `https://staging-brand.oono.ai/`.
+   - Or **DevTools → Network**: reload after opening the story; the first request for the player should be to `/api/amp-story/...` (same origin) if AMP is on.
+
+3. **Data attribute**  
+   The overlay and iframe have `data-player="amp"` when AMP is used, and `data-player="staging"` when the staging player is used. In **Elements**, select the overlay div or the iframe and check the attribute.
+
+4. **Same-origin**  
+   If the story loads and the browser’s address bar stays on your domain (e.g. `oono-assignment.vercel.app`) and the iframe document is same-origin, you are serving the story yourself — i.e. via your AMP route.
+
+If any check shows staging (or `data-player="staging"`), set `NEXT_PUBLIC_USE_AMP_PLAYER=true` in the right env and redeploy/restart.
+
 ## 1. Structure check (script)
 
 With the dev server running, get a valid `c` from the app (open any collection and copy the `c` query param from the URL), then:

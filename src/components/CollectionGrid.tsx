@@ -5,6 +5,9 @@ import { buildCollectionParam, getAssetUrl } from "@/lib/api";
 import type { Collection, Topic } from "@/lib/types";
 import { TopicFilter } from "./TopicFilter";
 
+const USE_AMP_PLAYER =
+  typeof process !== "undefined" && process.env.NEXT_PUBLIC_USE_AMP_PLAYER === "true";
+
 interface CollectionGridProps {
   slug: string;
   collections: Collection[];
@@ -27,7 +30,9 @@ function CollectionCard({
   params.set("c", c);
   params.set("story", "1");
   if (topicParam) params.set("topic", topicParam);
-  const href = `/${slug}?${params.toString()}`;
+  const href = USE_AMP_PLAYER
+    ? `/api/amp-story/${slug}?${params.toString()}`
+    : `/${slug}?${params.toString()}`;
   const thumbUrl = getAssetUrl(col.thumbnail || col.cover);
   const title = col.name.length > 50 ? col.name.slice(0, 47) + "…" : col.name;
   return (
@@ -89,7 +94,9 @@ export function CollectionGrid({
             params.set("c", c);
             params.set("story", "1");
             if (selectedTopicId) params.set("topic", selectedTopicId);
-            const linkHref = `/${slug}?${params.toString()}`;
+            const linkHref = USE_AMP_PLAYER
+              ? `/api/amp-story/${slug}?${params.toString()}`
+              : `/${slug}?${params.toString()}`;
             return (
               <Link
                 key={col._id}

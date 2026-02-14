@@ -1,11 +1,12 @@
 import type { Collection, StoryItem } from "./types";
 import { getAssetUrl } from "./api";
 
-/** Optional 0-based index to start the story at (for deep-linking to a specific story in the collection). */
+/** Optional 0-based index to start the story at (for deep-linking). Optional backUrl adds a final "Back" page. */
 export function generateAmpStoryHtml(
   collection: Collection,
   baseUrl: string,
-  startAtStoryIndex: number = 0
+  startAtStoryIndex: number = 0,
+  backUrl?: string
 ): string {
   const posterSrc = getAssetUrl(collection.thumbnail || collection.cover);
   const title = collection.name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -15,6 +16,14 @@ export function generateAmpStoryHtml(
   const fromIndex = Math.max(0, Math.min(startAtStoryIndex, sorted.length));
   const storiesToRender = sorted.slice(fromIndex);
   const pages = storiesToRender.map((story, i) => renderStoryPage(story, i));
+  if (backUrl) {
+    const safeBack = escapeHtml(backUrl);
+    pages.push(`    <amp-story-page id="back" auto-advance-after="999d">
+      <amp-story-grid-layer template="vertical">
+        <a href="${safeBack}">← Back to collections</a>
+      </amp-story-grid-layer>
+    </amp-story-page>`);
+  }
   return `<!DOCTYPE html>
 <html ⚡ lang="en">
 <head>

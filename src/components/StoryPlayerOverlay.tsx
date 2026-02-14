@@ -87,6 +87,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose }: StoryPlayerOverl
       role="dialog"
       aria-modal="true"
       aria-label="Story player"
+      data-player={USE_AMP_PLAYER ? "amp" : "staging"}
     >
       {/* Backdrop: clicking here closes and keeps you on our app (not oono’s site) */}
       <button
@@ -122,6 +123,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose }: StoryPlayerOverl
           className="w-full h-full border-0 bg-black pointer-events-auto rounded-2xl"
           allow="autoplay; fullscreen"
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+          data-player={USE_AMP_PLAYER ? "amp" : "staging"}
         />
       </div>
     </div>

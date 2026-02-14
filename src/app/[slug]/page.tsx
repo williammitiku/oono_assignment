@@ -1,9 +1,13 @@
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { fetchCollections, fetchTopics } from "@/lib/api";
 import { CollectionGrid } from "@/components/CollectionGrid";
 import { PlayerWrapper } from "@/components/PlayerWrapper";
 import { QRCodeBlock } from "@/components/QRCodeBlock";
 import type { Topic } from "@/lib/types";
+
+const USE_AMP_PLAYER =
+  process.env.NEXT_PUBLIC_USE_AMP_PLAYER === "true";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -16,6 +20,10 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
   const storyNum = story ? Math.max(1, parseInt(story, 10) || 1) : 0;
   const showPlayer = Boolean(c && storyNum >= 1);
   const selectedTopicId = topicParam && topicParam.trim() !== "" ? topicParam.trim() : null;
+
+  if (USE_AMP_PLAYER && showPlayer && c) {
+    redirect(`/api/amp-story/${slug}?${new URLSearchParams({ c, story: String(storyNum) }).toString()}`);
+  }
 
   let collections: Awaited<ReturnType<typeof fetchCollections>>["data"] = [];
   let topics: Topic[] = [];
@@ -84,7 +92,7 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
           <QRCodeBlock url={pageUrl} size={128} />
         </div>
       </footer>
-      {showPlayer && c && (
+      {showPlayer && c && !USE_AMP_PLAYER && (
         <PlayerWrapper slug={slug} c={c} story={storyNum} />
       )}
     </main>
