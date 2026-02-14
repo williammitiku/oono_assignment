@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { StoryPlayerOverlay } from "./StoryPlayerOverlay";
 
 interface PlayerWrapperProps {
@@ -11,10 +11,10 @@ interface PlayerWrapperProps {
 
 export function PlayerWrapper({ slug, c, story }: PlayerWrapperProps) {
   const router = useRouter();
-  const pathname = usePathname();
 
   const onClose = () => {
-    router.replace(pathname ?? "/", { scroll: false });
+    // Close video and go back to home
+    router.replace("/", { scroll: false });
   };
 
   return (

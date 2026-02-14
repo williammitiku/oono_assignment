@@ -22,8 +22,12 @@ export async function GET(
   if (!collection) {
     return new NextResponse("Collection not found", { status: 404 });
   }
+  const storyParam = request.nextUrl.searchParams.get("story");
+  const startAtStoryIndex = storyParam
+    ? Math.max(0, (parseInt(storyParam, 10) || 1) - 1)
+    : 0;
   const baseUrl = request.nextUrl.origin + request.nextUrl.pathname + "?c=" + encodeURIComponent(c);
-  const html = generateAmpStoryHtml(collection, baseUrl);
+  const html = generateAmpStoryHtml(collection, baseUrl, startAtStoryIndex);
   return new NextResponse(html, {
     headers: {
       "Content-Type": "text/html; charset=utf-8",

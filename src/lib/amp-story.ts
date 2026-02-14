@@ -1,14 +1,22 @@
 import type { Collection, StoryItem } from "./types";
 import { getAssetUrl } from "./api";
 
-export function generateAmpStoryHtml(collection: Collection, baseUrl: string): string {
+/** Optional 0-based index to start the story at (for deep-linking to a specific story in the collection). */
+export function generateAmpStoryHtml(
+  collection: Collection,
+  baseUrl: string,
+  startAtStoryIndex: number = 0
+): string {
   const posterSrc = getAssetUrl(collection.thumbnail || collection.cover);
   const title = collection.name.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-  const pages = (collection.stories || [])
-    .sort((a, b) => (a.collectionOrder?.[collection.collectionId] ?? 0) - (b.collectionOrder?.[collection.collectionId] ?? 0))
-    .map((story, i) => renderStoryPage(story, i));
+  const sorted = (collection.stories || []).sort(
+    (a, b) => (a.collectionOrder?.[collection.collectionId] ?? 0) - (b.collectionOrder?.[collection.collectionId] ?? 0)
+  );
+  const fromIndex = Math.max(0, Math.min(startAtStoryIndex, sorted.length));
+  const storiesToRender = sorted.slice(fromIndex);
+  const pages = storiesToRender.map((story, i) => renderStoryPage(story, i));
   return `<!DOCTYPE html>
-<html ⚡>
+<html ⚡ lang="en">
 <head>
   <meta charset="utf-8">
   <script async src="https://cdn.ampproject.org/v0.js"></script>
@@ -17,6 +25,8 @@ export function generateAmpStoryHtml(collection: Collection, baseUrl: string): s
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <link rel="canonical" href="${baseUrl}">
+  <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
+  <noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
 </head>
 <body>
   <amp-story
@@ -43,7 +53,7 @@ function renderStoryPage(story: StoryItem, index: number): string {
 
   let mediaTag: string;
   if (isVideo) {
-    mediaTag = `<amp-video id="vid-${index}" layout="fill" src="${escapeHtml(mediaUrl)}" poster="${escapeHtml(posterUrl)}" muted autoplay loop="false" width="720" height="1280"><source type="video/mp4" src="${escapeHtml(mediaUrl)}"></amp-video>`;
+    mediaTag = `<amp-video id="vid-${index}" layout="fill" src="${escapeHtml(mediaUrl)}" poster="${escapeHtml(posterUrl)}" muted autoplay width="720" height="1280"><source type="video/mp4" src="${escapeHtml(mediaUrl)}"></amp-video>`;
   } else {
     mediaTag = `<amp-img layout="fill" src="${escapeHtml(mediaUrl)}" alt=""></amp-img>`;
   }
