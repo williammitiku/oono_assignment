@@ -101,7 +101,6 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
       aria-label="Story player"
       data-player="amp"
     >
-      {/* Backdrop: clicking here closes and keeps you on our app (not oono’s site) */}
       <button
         type="button"
         onClick={onClose}
