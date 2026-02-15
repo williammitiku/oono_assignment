@@ -45,11 +45,11 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
 
   return (
     <main className="min-h-screen bg-white flex flex-col">
-      {/* <header className="border-b border-gray-200 px-4 py-4 flex justify-center">
+      <header className="border-b border-gray-200 px-4 py-4 flex justify-center">
         <a href="/" className="text-xl font-semibold text-black no-underline">
-          William
+          
         </a>
-      </header> */}
+      </header>
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6">
         {error && (
           <p className="text-red-600 text-sm mb-4">{error}</p>
