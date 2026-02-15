@@ -35,7 +35,6 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const currentStoryRef = useRef(story);
   currentStoryRef.current = story;
-  const [isLoading, setIsLoading] = useState(true);
   const [shareFeedback, setShareFeedback] = useState(false);
 
   const iframeSrc = buildAmpStoryUrl(slug, c, story);
@@ -69,10 +68,6 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
   };
 
   useEffect(() => {
-    setIsLoading(true);
-  }, [story]);
-
-  useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -82,13 +77,11 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
       const cur = currentStoryRef.current;
       if (e.key === "ArrowRight") {
         e.preventDefault();
-        setIsLoading(true);
         updateLocalUrl(cur + 1);
         iframeRef.current?.setAttribute("src", buildAmpStoryUrl(slug, c, cur + 1));
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         if (cur > 1) {
-          setIsLoading(true);
           updateLocalUrl(cur - 1);
           iframeRef.current?.setAttribute("src", buildAmpStoryUrl(slug, c, cur - 1));
         }
@@ -116,7 +109,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
         aria-label="Close overlay"
       />
       <div className="relative z-[60] flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 pointer-events-none">
-        <span className="text-xl font-semibold text-white tracking-tight">oono</span>
+        <span className="text-xl font-semibold text-white tracking-tight"></span>
         <div className="flex items-center gap-2 pointer-events-auto">
           <button
             type="button"
@@ -155,14 +148,6 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
             </svg>
           </button>
           <div className="flex-1 min-h-0 w-full bg-white rounded-[2rem] sm:rounded-[2.5rem] p-1 sm:p-1.5 shadow-2xl flex flex-col overflow-hidden relative">
-            {isLoading && (
-              <div className="absolute inset-0 z-[61] flex items-center justify-center rounded-[1.5rem] sm:rounded-[2rem] bg-black/90">
-                <div className="flex flex-col items-center gap-3">
-                  <div className="w-12 h-12 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span className="text-sm text-white/80">Loading story…</span>
-                </div>
-              </div>
-            )}
             <div className="flex-1 min-h-0 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden bg-black relative">
               <iframe
                 ref={iframeRef}
@@ -171,7 +156,6 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
                 className="w-full h-full border-0 bg-black pointer-events-auto"
                 allow="autoplay; fullscreen"
                 data-player="amp"
-                onLoad={() => setIsLoading(false)}
               />
             </div>
           </div>

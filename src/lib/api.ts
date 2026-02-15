@@ -52,13 +52,16 @@ export function getStagingPlayerBase(): string {
 
 /**
  * Build full URL for thumbnails/images using the path from the API.
- * Example: "images_720x/1770269529431_...mp4_thumbnail_1.jpg"
- *    → "https://media.oono.ai/uploads/images_720x/1770269529431_...mp4_thumbnail_1.jpg"
+ * If path is already a full URL (http/https), return it as-is.
+ * Otherwise prepend the oono media base (path used as-is, no extension added).
  */
 export function getAssetUrl(path: string): string {
   if (!path || typeof path !== "string") return "";
+  const trimmed = path.trim();
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
   const base = process.env.NEXT_PUBLIC_OONO_ASSET_BASE || "https://media.oono.ai/uploads";
-  let normalized = path.startsWith("/") ? path.slice(1) : path;
-  if (!/\.[a-z0-9]+$/i.test(normalized)) normalized = `${normalized}.jpg`;
+  const normalized = trimmed.startsWith("/") ? trimmed.slice(1) : trimmed;
   return `${base.replace(/\/$/, "")}/${normalized}`;
 }
