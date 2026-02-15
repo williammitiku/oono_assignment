@@ -1,6 +1,8 @@
 # Brand Collection Page + Google AMP Player Integration — Assignment Report
 
 **Deployed URL:** [https://oono-assignment.vercel.app/](https://oono-assignment.vercel.app/)  
+**Collection page:** [https://oono-assignment.vercel.app/nov-25](https://oono-assignment.vercel.app/nov-25)  
+**Source code:** [https://github.com/williammitiku/oono_assignment](https://github.com/williammitiku/oono_assignment)  
 **Reference URL:** [https://staging-brand.oono.ai/nov-25](https://staging-brand.oono.ai/nov-25)  
 **AMP reference:** [https://amp.dev/about/stories](https://amp.dev/about/stories)
 

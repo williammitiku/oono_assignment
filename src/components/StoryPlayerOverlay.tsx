@@ -80,7 +80,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
         aria-label="Close overlay"
       />
       <div className="relative z-[60] flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 pointer-events-none">
-        <span className="text-xl font-semibold text-white tracking-tight">#</span>
+        <span className="text-xl font-semibold text-white tracking-tight">oono</span>
         <button
           type="button"
           onClick={onClose}
