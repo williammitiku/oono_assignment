@@ -1,13 +1,9 @@
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
 import { fetchCollections, fetchTopics } from "@/lib/api";
 import { CollectionGrid } from "@/components/CollectionGrid";
 import { PlayerWrapper } from "@/components/PlayerWrapper";
 import { QRCodeBlock } from "@/components/QRCodeBlock";
 import type { Topic } from "@/lib/types";
-
-const USE_AMP_PLAYER =
-  process.env.NEXT_PUBLIC_USE_AMP_PLAYER === "true";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -20,10 +16,6 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
   const storyNum = story ? Math.max(1, parseInt(story, 10) || 1) : 0;
   const showPlayer = Boolean(c && storyNum >= 1);
   const selectedTopicId = topicParam && topicParam.trim() !== "" ? topicParam.trim() : null;
-
-  if (USE_AMP_PLAYER && showPlayer && c) {
-    redirect(`/api/amp-story/${slug}?${new URLSearchParams({ c, story: String(storyNum) }).toString()}#showStoryUrlInfo=0`);
-  }
 
   let collections: Awaited<ReturnType<typeof fetchCollections>>["data"] = [];
   let topics: Topic[] = [];
@@ -46,7 +38,6 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
     error = e instanceof Error ? e.message : "Failed to load collections";
   }
 
-  const titleLabel = slug.replace(/-/g, " ");
   const headersList = await headers();
   const host = headersList.get("host") ?? "localhost:3000";
   const protocol = host.includes("localhost") ? "http" : "https";
@@ -60,19 +51,6 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
         </a>
       </header>
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 py-6 sm:px-6">
-        <div className="flex items-start gap-4 mb-4">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gray-500 shrink-0 flex items-center justify-center">
-            <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-white" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 capitalize">
-              {titleLabel}
-            </h1>
-            <p className="text-gray-500 text-sm mt-1 leading-relaxed">
-              cwdv dwvsdvawvdwwwavwwwwwrv uhwfo uqwhfou qwehfouwqeh fu
-            </p>
-          </div>
-        </div>
         {error && (
           <p className="text-red-600 text-sm mb-4">{error}</p>
         )}
@@ -92,8 +70,8 @@ export default async function BrandCollectionPage({ params, searchParams }: Page
           <QRCodeBlock url={pageUrl} size={128} />
         </div>
       </footer>
-      {showPlayer && c && !USE_AMP_PLAYER && (
-        <PlayerWrapper slug={slug} c={c} story={storyNum} />
+      {showPlayer && c && (
+        <PlayerWrapper slug={slug} c={c} story={storyNum} pageUrl={pageUrl} />
       )}
     </main>
   );

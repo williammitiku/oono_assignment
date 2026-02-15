@@ -1,13 +1,13 @@
 # Verifying AMP Story output
 
-The in-app story player can use **AMP Story** (when `NEXT_PUBLIC_USE_AMP_PLAYER=true`). The document is generated in `src/lib/amp-story.ts` and served at `/api/amp-story/[slug]?c=...&story=...`.
+The in-app story player always uses **AMP Story**. The document is generated in `src/lib/amp-story.ts` and served at `/api/amp-story/[slug]?c=...&story=...`.
 
 ## 0. Confirm the story is opening through AMP
 
 Use these checks to confirm that when you open a collection, the **AMP player** is used (not the oono staging iframe).
 
 1. **Env**  
-   AMP is used only when `NEXT_PUBLIC_USE_AMP_PLAYER=true`.  
+   AMP is always used for the story player.  
    - Local: set in `.env.local` and restart the dev server.  
    - Vercel: set in Project → Settings → Environment Variables for Production/Preview.
 
@@ -24,7 +24,7 @@ Use these checks to confirm that when you open a collection, the **AMP player** 
 4. **Same-origin**  
    If the story loads and the browser’s address bar stays on your domain (e.g. `oono-assignment.vercel.app`) and the iframe document is same-origin, you are serving the story yourself — i.e. via your AMP route.
 
-If any check shows staging (or `data-player="staging"`), set `NEXT_PUBLIC_USE_AMP_PLAYER=true` in the right env and redeploy/restart.
+If any check shows staging (or `data-player="staging"`), the app has been built from an older version; the current app always uses AMP.
 
 ## 1. Structure check (script)
 
@@ -46,12 +46,11 @@ The script checks that the response includes:
 
 The overlay does **not** add `#development=1` to the iframe (doing so loads AMP dev tools in the iframe, which expect an `amp-story-player` parent and cause "page-1" / "isAd" console errors). To validate:
 
-1. Set `NEXT_PUBLIC_USE_AMP_PLAYER=true` in `.env.local`.
-2. Open the AMP story URL in a **new tab** and add `#development=1`, e.g.:
+1. Open the AMP story URL in a **new tab** and add `#development=1`, e.g.:
    ```
    http://localhost:3000/api/amp-story/nov-25?c=...&story=1#development=1
    ```
-3. Open **Developer Tools → Console**. If the document is valid AMP, you should see: **"AMP validation successful."**
+2. Open **Developer Tools → Console**. If the document is valid AMP, you should see: **"AMP validation successful."**
 
 ## 3. Official validator
 

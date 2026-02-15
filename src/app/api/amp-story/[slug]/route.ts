@@ -27,7 +27,8 @@ export async function GET(
     ? Math.max(0, (parseInt(storyParam, 10) || 1) - 1)
     : 0;
   const baseUrl = request.nextUrl.origin + request.nextUrl.pathname + "?c=" + encodeURIComponent(c);
-  const closeUrl = request.nextUrl.origin + "/";
+  const embed = request.nextUrl.searchParams.get("embed") === "1";
+  const closeUrl = embed ? undefined : `${request.nextUrl.origin}/${slug}`;
   const html = generateAmpStoryHtml(collection, baseUrl, startAtStoryIndex, closeUrl);
   return new NextResponse(html, {
     headers: {

@@ -65,14 +65,14 @@ function renderStoryPage(story: StoryItem, index: number, closeUrl?: string): st
     closeUrl != null
       ? `
       <amp-story-grid-layer template="fill">
-        <span class="amp-story-close-wrap"><a href="${escapeHtml(closeUrl)}" class="amp-story-close" aria-label="Close and go to home" data-tooltip-text="Close and go to home">×</a></span>
+        <span class="amp-story-close-wrap"><a href="${escapeHtml(closeUrl)}" class="amp-story-close" aria-label="Close" data-tooltip-text="Go to home">×</a></span>
       </amp-story-grid-layer>`
       : "";
   const outlink =
     closeUrl != null
       ? `
       <amp-story-page-outlink layout="nodisplay">
-        <a href="${escapeHtml(closeUrl)}" title="Close and go to home">Close and go to home</a>
+        <a href="${escapeHtml(closeUrl)}" title="Close">×</a>
       </amp-story-page-outlink>`
       : "";
   return `    <amp-story-page id="${pageId}"${autoAdvance}>

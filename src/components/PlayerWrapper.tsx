@@ -7,17 +7,17 @@ interface PlayerWrapperProps {
   slug: string;
   c: string;
   story: number;
+  pageUrl?: string;
 }
 
-export function PlayerWrapper({ slug, c, story }: PlayerWrapperProps) {
+export function PlayerWrapper({ slug, c, story, pageUrl }: PlayerWrapperProps) {
   const router = useRouter();
 
   const onClose = () => {
-    // Close video and go back to home
-    router.replace("/", { scroll: false });
+    router.replace(`/${slug}`, { scroll: false });
   };
 
   return (
-    <StoryPlayerOverlay slug={slug} c={c} story={story} onClose={onClose} />
+    <StoryPlayerOverlay slug={slug} c={c} story={story} onClose={onClose} pageUrl={pageUrl} />
   );
 }

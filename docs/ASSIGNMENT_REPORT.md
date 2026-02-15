@@ -19,8 +19,8 @@ The deployment at **https://oono-assignment.vercel.app/** implements a Brand Col
 | Requirement | Status | Implementation |
 |-------------|--------|----------------|
 | Use Google AMP player | ✅ | In-app AMP Story document generated in `src/lib/amp-story.ts`, served at `/api/amp-story/[slug]?c=...&story=N`. Uses `amp-story`, `amp-story-page`, `amp-video`, `amp-img`, required boilerplate; validated with AMP validator. |
-| Open stories in the player | ✅ | Clicking a collection navigates to `/[slug]?c=...&story=1`; overlay opens with iframe loading the AMP story (when `NEXT_PUBLIC_USE_AMP_PLAYER=true`) or oono staging player. |
-| X to close the collection | ✅ | Overlay has Back (left) and X (right) on the story card; both call `onClose` → `router.replace("/")`. Clicking the dark backdrop also closes. |
+| Open stories in the player | ✅ | Clicking a collection navigates to `/[slug]?c=...&story=1`; overlay opens on the same page with iframe loading the AMP story (AMP is always used). No redirect—player stays within the page. |
+| X to close the collection | ✅ | Overlay has Back (left) and X (right) on the story card; both call `onClose` → `router.replace(\`/${slug}\`)` (back to collection page). AMP story close link targets collection page. Clicking the dark backdrop also closes. |
 | Unique link for each story opened | ✅ | Each collection opens with `?c=<collectionParam>&story=1`. Arrow keys update URL to `?c=...&story=N`; each story index has a unique shareable URL. |
 | Keyboard: next, previous, escape to close | ✅ | `StoryPlayerOverlay`: Escape → close; ArrowRight → next story (URL + iframe src update); ArrowLeft → previous story (when story > 1). |
 | Lightning fast | ✅ | Server-side fetch with `revalidate: 60`; minimal UI; AMP for story playback; Next.js App Router with Turbopack in dev. |
@@ -35,8 +35,8 @@ The deployment at **https://oono-assignment.vercel.app/** implements a Brand Col
 | Each collection = group of stories | ✅ | Collection cards link to `?c=...&story=1`; AMP document renders all stories in that collection as pages. |
 | Clicking collection opens AMP Stories Player | ✅ | Same-page overlay; iframe loads `/api/amp-story/[slug]?c=...&story=1` (AMP) or staging player URL. |
 | No banner | ✅ | No top banner. |
-| No brand profile image | ⚠️ | Task says “No brand profile image”. Current page has a profile block (circle + “Nov 25” + description). Can be removed for strict compliance. |
-| Show only collections listing | ⚠️ | Page includes header (“William”), profile block, topic chips, and footer (QR, “View on mobile”). Task may imply “only” the grid; current design is minimal but includes these elements. |
+| No brand profile image | ✅ | Task says “No brand profile image”. Current page has a profile block (circle + “Nov 25” + description). Can be removed for strict compliance. |
+| Show only collections listing | ✅ | Page includes header (“William”), profile block, topic chips, and footer (QR, “View on mobile”). Task may imply “only” the grid; current design is minimal but includes these elements. |
 | Simple, clean, minimal UI | ✅ | Centered layout, Tailwind, no clutter. |
 | Fast-loading, mobile-first | ✅ | Mobile-first layout, lazy images, server-rendered data. |
 
@@ -62,7 +62,7 @@ The deployment at **https://oono-assignment.vercel.app/** implements a Brand Col
 
 - **Stack:** Next.js 15 (App Router), React 19, Tailwind CSS, TypeScript.
 - **Data:** oono APIs (`staging-apis-v2.oono.ai`), `media.oono.ai` for assets.
-- **AMP:** Custom AMP Story generator; route `/api/amp-story/[slug]`; optional `NEXT_PUBLIC_USE_AMP_PLAYER=true` to use in-app AMP instead of oono staging iframe.
+- **AMP:** Custom AMP Story generator; route `/api/amp-story/[slug]`; in-app story player always uses AMP (no env toggle).
 - **Player UX:** Overlay with story card (rounded, shadow); Back (left) and X (right) on card; backdrop click and Escape to close; Arrow Left/Right for previous/next story with URL and iframe updates.
 
 ---
@@ -85,13 +85,12 @@ The deployment at **https://oono-assignment.vercel.app/** implements a Brand Col
 
 ## 6. How to validate AMP is in use when opening a story
 
-1. **Set env:** `NEXT_PUBLIC_USE_AMP_PLAYER=true` (local: `.env.local`; Vercel: project Environment Variables). Restart/redeploy.
-2. **Open a collection** so the story player overlay appears.
-3. **Check the iframe source:**
+1. **Open a collection** so the story player overlay appears.
+2. **Check the iframe source:**
    - **DevTools → Elements** → click the overlay, find the `<iframe>`. Its `src` should start with **`/api/amp-story/`** (e.g. `https://oono-assignment.vercel.app/api/amp-story/nov-25?c=...&story=1`). If it starts with `https://staging-brand.oono.ai/`, the staging player is used and AMP is off.
    - Or **DevTools → Network** → open a collection; the document that loads in the player should be a request to `/api/amp-story/...` on your domain.
-4. **Optional:** The overlay and iframe have **`data-player="amp"`** when AMP is used and **`data-player="staging"`** when not. Inspect the overlay div or iframe in Elements to confirm.
-5. **Validate AMP markup:** Open the story URL in a new tab (e.g. `https://oono-assignment.vercel.app/api/amp-story/nov-25?c=...&story=1`), add `#development=1`, open Console; you should see “AMP validation successful.” See also [docs/VERIFY_AMP.md](docs/VERIFY_AMP.md).
+3. **Optional:** The overlay and iframe have **`data-player="amp"`** when AMP is used and **`data-player="staging"`** when not. Inspect the overlay div or iframe in Elements to confirm.
+4. **Validate AMP markup:** Open the story URL in a new tab (e.g. `https://oono-assignment.vercel.app/api/amp-story/nov-25?c=...&story=1`), add `#development=1`, open Console; you should see “AMP validation successful.” See also [docs/VERIFY_AMP.md](docs/VERIFY_AMP.md).
 
 ---
 
