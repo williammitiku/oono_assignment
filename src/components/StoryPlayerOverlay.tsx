@@ -184,7 +184,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
           rel="noopener noreferrer"
           className="pointer-events-auto rounded-lg bg-red-900/90 px-3 py-2 text-sm font-medium text-white hover:bg-red-900 transition-colors"
         >
-          Made with oono
+          Made with #
         </a>
         {collectionUrl ? (
           <div className="flex flex-col items-end">
