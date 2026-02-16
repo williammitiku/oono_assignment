@@ -95,7 +95,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
 
   return (
     <div
-      className="fixed inset-0 z-50 flex flex-col bg-black sm:bg-gradient-to-b sm:from-gray-800 sm:via-gray-700 sm:to-red-800/90"
+      className="fixed inset-0 z-50 flex flex-col bg-black"
       role="dialog"
       aria-modal="true"
       aria-label="Story player"
@@ -135,7 +135,7 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
         </div>
       </div>
       <div className="absolute inset-0 sm:relative sm:z-[58] sm:flex-1 sm:min-h-0 flex flex-col items-stretch justify-center sm:items-center sm:px-4 z-[58]">
-        <div className="relative w-full h-full min-h-0 flex-1 sm:h-auto sm:flex-none sm:max-w-[420px] sm:max-h-[720px] flex flex-col">
+        <div className="relative w-full h-full min-h-0 flex-1 sm:h-[90vh] sm:max-h-[90vh] sm:aspect-[9/16] sm:w-auto sm:flex-none flex flex-col">
           <button
             type="button"
             onClick={onClose}
@@ -146,8 +146,8 @@ export function StoryPlayerOverlay({ slug, c, story, onClose, pageUrl }: StoryPl
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <div className="flex-1 min-h-0 w-full bg-black sm:bg-white sm:rounded-[2.5rem] p-0 sm:p-1.5 sm:shadow-2xl flex flex-col overflow-hidden relative">
-            <div className="flex-1 min-h-0 sm:rounded-[2rem] overflow-hidden bg-black relative">
+          <div className="flex-1 min-h-0 w-full bg-black flex flex-col overflow-hidden relative">
+            <div className="flex-1 min-h-0 overflow-hidden bg-black relative">
               <div className="sm:hidden absolute top-3 left-3 z-[62] flex items-center gap-2 pointer-events-auto">
                 <button
                   type="button"
