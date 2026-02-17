@@ -26,7 +26,6 @@ export function generateAmpStoryHtml(
   <title>${title}</title>
   <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
   <link rel="canonical" href="${baseUrl}">
-  <style amp-custom>.amp-story-close-wrap{position:absolute;top:12px;right:12px;z-index:10;}.amp-story-close{display:flex;align-items:center;justify-content:center;width:48px;height:48px;color:#fff;text-decoration:none;font-size:32px;line-height:1;font-weight:300;background:rgba(0,0,0,.55);border-radius:50%;}.amp-story-close:hover{background:rgba(0,0,0,.75);}</style>
   <style amp-boilerplate>body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style>
   <noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
 </head>
@@ -61,24 +60,19 @@ function renderStoryPage(story: StoryItem, index: number, closeUrl?: string): st
   }
 
   const autoAdvance = isVideo ? ` auto-advance-after="vid-${index}"` : ` auto-advance-after="${duration}s"`;
-  const closeLayer =
-    closeUrl != null
-      ? `
-      <amp-story-grid-layer template="fill">
-        <span class="amp-story-close-wrap"><a href="${escapeHtml(closeUrl)}" class="amp-story-close" aria-label="Close" data-tooltip-text="Go to home">×</a></span>
-      </amp-story-grid-layer>`
-      : "";
   const outlink =
     closeUrl != null
       ? `
-      <amp-story-page-outlink layout="nodisplay">
+      <amp-story-page-outlink layout="nodisplay" cta-image="data:image/svg+xml,${encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><line x1="8" y1="8" x2="24" y2="24"/><line x1="24" y1="8" x2="8" y2="24"/></svg>'
+      )}">
         <a href="${escapeHtml(closeUrl)}" title="Close">×</a>
       </amp-story-page-outlink>`
       : "";
   return `    <amp-story-page id="${pageId}"${autoAdvance}>
       <amp-story-grid-layer template="fill">
         ${mediaTag}
-      </amp-story-grid-layer>${closeLayer}${outlink}
+      </amp-story-grid-layer>${outlink}
     </amp-story-page>`;
 }
 

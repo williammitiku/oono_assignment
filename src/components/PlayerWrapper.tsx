@@ -1,7 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { StoryPlayerOverlay } from "./StoryPlayerOverlay";
 
 interface PlayerWrapperProps {
   slug: string;
@@ -10,14 +10,23 @@ interface PlayerWrapperProps {
   pageUrl?: string;
 }
 
-export function PlayerWrapper({ slug, c, story, pageUrl }: PlayerWrapperProps) {
+/** Build AMP story URL for direct navigation (without embed parameter). */
+function buildAmpStoryUrl(slug: string, c: string, story: number): string {
+  const params = new URLSearchParams();
+  params.set("c", c);
+  params.set("story", String(story));
+  return `/api/amp-story/${slug}?${params.toString()}`;
+}
+
+export function PlayerWrapper({ slug, c, story }: PlayerWrapperProps) {
   const router = useRouter();
 
-  const onClose = () => {
-    router.replace(`/${slug}`, { scroll: false });
-  };
+  useEffect(() => {
+    // Redirect to AMP Story page directly - AMP will handle the player natively
+    const ampStoryUrl = buildAmpStoryUrl(slug, c, story);
+    router.push(ampStoryUrl);
+  }, [slug, c, story, router]);
 
-  return (
-    <StoryPlayerOverlay slug={slug} c={c} story={story} onClose={onClose} pageUrl={pageUrl} />
-  );
+  // Return null while redirecting
+  return null;
 }
